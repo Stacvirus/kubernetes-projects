@@ -4,7 +4,7 @@ A Go application that generates SHA-1 hashes periodically and exposes them via a
 
 ## Prerequisites
 
-- Go 1.21 or higher
+- Go 1.24.5 or higher
 - Docker (optional)
 
 ## Running Locally
