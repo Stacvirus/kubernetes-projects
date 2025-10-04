@@ -22,8 +22,10 @@ WORKDIR /app
 # Copy binary from builder
 COPY --from=builder /app/hash-generator .
 
+ENV PORT=4040
+
 # Expose port 8080
-EXPOSE 8080
+# EXPOSE 8080
 
 # Run the application
 CMD ["./hash-generator"]
