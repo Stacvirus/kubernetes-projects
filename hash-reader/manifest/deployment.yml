@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashes-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hashes
+  template:
+    metadata:
+      labels:
+        app: hashes
+    spec:
+      volumes:
+        - name: shared-hash
+          emptyDir: {}
+      containers:
+        - name: hash-generator
+          image: hash-generator-go:latest 
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: shared-hash
+            mountPath: /usr/src/app/files
+          env:
+            - name: HASH_FILE_PATH
+              value: "/usr/src/app/files/hashes.log"
+        - name: hash-reader
+          image: hash-reader:latest
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: shared-hash
+            mountPath: /usr/src/app/files
+          env:
+            - name: HASH_FILE_PATH
+              value: "/usr/src/app/files/hashes.log"

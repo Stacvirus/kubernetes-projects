@@ -24,12 +24,17 @@ func main() {
 	port := os.Getenv(("PORT"))
 	log.Printf("Starting hash app on :%s", port)
 
+	path := os.Getenv("HASH_FILE_PATH")
+	if path == "" {
+		path = "hashes.log"
+	}
+
 	ticker := time.NewTicker(5 * time.Second)
 	go func() {
 		for range ticker.C {
 			h := hash.Generate()
 			log.Printf("%s", h)
-			hash.WriteToFile("hashes.log", h)
+			hash.WriteToFile(path, h)
 		}
 	}()
 
