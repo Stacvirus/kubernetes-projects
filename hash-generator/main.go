@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,18 +8,11 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/stacvirus/hash-generator-app/internal/hash"
 )
 
-func generateHash() string {
-	h := sha1.New()
-	h.Write([]byte("Hello, World!"))
-	sum := h.Sum(nil)
-
-	return hex.EncodeToString(sum)[:10]
-}
-
 func handler(w http.ResponseWriter, r *http.Request) {
-	hash := generateHash()
+	hash := hash.Generate()
 	log.Printf("%s", hash)
 	w.Write([]byte(hash))
 }
@@ -31,13 +22,14 @@ func main() {
 		log.Println("No .env file found")
 	}
 	port := os.Getenv(("PORT"))
-	log.Printf("Starting TODO app on :%s", port)
+	log.Printf("Starting hash app on :%s", port)
 
 	ticker := time.NewTicker(5 * time.Second)
 	go func() {
 		for range ticker.C {
-			hash := generateHash()
-			log.Printf("%s", hash)
+			h := hash.Generate()
+			log.Printf("%s", h)
+			hash.WriteToFile("hashes.log", h)
 		}
 	}()
 
