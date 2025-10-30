@@ -1,4 +1,4 @@
-module github.com/Stacvirus/hash-generator-app
+module ping-pong
 
 go 1.24.5
 
