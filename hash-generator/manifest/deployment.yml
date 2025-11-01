@@ -12,7 +12,17 @@ spec:
       labels:
         app: hashgenerator
     spec:
+      volumes:
+        - name: shared-hash
+          persistentVolumeClaim:
+            claimName: hash-claim
       containers:
         - name: hashgenerator
-          image: hash-generator-go:2.0.0
+          image: hash-generator-go:3.0.0
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: shared-hash
+            mountPath: /usr/src/app/files
+          env:
+            - name: HASH_FILE_PATH
+              value: "/usr/src/app/files/hashes.log"

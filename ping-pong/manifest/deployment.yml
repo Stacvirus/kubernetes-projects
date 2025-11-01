@@ -1,18 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pingpong-dep
+  name: request-count-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pingpong
+      app: requestcount
   template:
     metadata:
       labels:
-        app: pingpong
+        app: requestcount
     spec:
+      volumes:
+        - name: shared-hash
+          persistentVolumeClaim:
+            claimName: hash-claim
       containers:
         - name: pingpong
           image: ping-pong:latest
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: shared-hash
+            mountPath: /usr/src/app/files
+          env:
+            - name: HASH_FILE_PATH
+              value: "/usr/src/app/files/hashes.log"
+        - name: hashgenerator
+          image: hash-generator-go:latest 
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: shared-hash
+            mountPath: /usr/src/app/files
+          env:
+            - name: HASH_FILE_PATH
+              value: "/usr/src/app/files/hashes.log"
