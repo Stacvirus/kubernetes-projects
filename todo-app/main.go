@@ -29,7 +29,7 @@ func main() {
 
 	log.Printf("Starting TODO app on :%s", port)
 
-	const cacheDuration = 1 * time.Minute
+	const cacheDuration = 10 * time.Minute
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Check if cached image is still fresh
 		needNew := true
