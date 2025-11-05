@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todo-app
+  name: todo-app-dep
 spec:
   replicas: 1
   selector:
@@ -12,7 +12,17 @@ spec:
       labels:
         app: todoapp
     spec:
+      volumes:
+        - name: todoapp-storage
+          persistentVolumeClaim:
+            claimName: todoapp-claim
       containers:
         - name: todoapp
           image: todo-app:latest
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: todoapp-storage
+            mountPath: /usr/src/app/data
+          env:
+            - name: CACHE_FILE_PATH
+              value: "/usr/src/app/data"
