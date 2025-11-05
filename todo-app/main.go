@@ -63,7 +63,17 @@ func main() {
 		</head>
 		<body>
 			<h1>The project App</h1>
-			<img src="/image" alt="Random image" width="200"/>
+			<img src="/image" alt="Random image" width="200"/><br/>
+
+			<input type="text" placeholder="" />
+			<button>create todo</button>
+
+			<ul>
+				<li>Learn JavaScript</li>
+				<li>Learn React</li>
+				<li>Build a project</li>
+			</ul>
+
 			<p>DevOps with Kubernetes 2025</p>
 		</body>
 		</html>
