@@ -9,7 +9,7 @@ import (
 func WriteToFile(filename, value string) {
 	f, err := os.OpenFile(filename, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Printf("Error opening file: %v", err)
+		log.Printf("Error opening file: %s: %v", filename, err)
 		return
 	}
 	defer f.Close()

@@ -1,45 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
-	"os"
-	"ping-pong/internal/input"
-	"sync"
 
-	"github.com/joho/godotenv"
+	"ping-pong/internal/config"
+	"ping-pong/internal/server"
 )
 
-type HandleRequest struct {
-	mu      sync.Mutex
-	counter int
-	path    string
-}
-
-func (h *HandleRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.mu.Lock()
-	h.counter++
-	count := h.counter
-	h.mu.Unlock()
-
-	log.Printf("Ping-Pong received a request #%d", count)
-	input.WriteToFile(h.path, fmt.Sprintf("%d", count))
-	w.Write([]byte(fmt.Sprintf("pong %d", count)))
-}
-
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found")
+	cfg := config.Load()
+	s := server.New(cfg)
+	log.Printf("🚀 Starting server on :%s", cfg.Port)
+	if err := s.Start(":" + cfg.Port); err != nil {
+		log.Fatalf("failed to start server: %v", err)
 	}
-	port := os.Getenv("PORT")
-	path := os.Getenv("HASH_FILE_PATH")
-	if path == "" {
-		path = "hashes.log"
-	}
-	h := &HandleRequest{path: path}
-
-	log.Printf("Starting Ping Pong app on :%s", port)
-	http.Handle("/", h)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
