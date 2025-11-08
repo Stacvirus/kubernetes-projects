@@ -15,7 +15,7 @@ func Load() *Config {
 	_ = godotenv.Load()
 	cfg := &Config{
 		Port: getEnv("PORT", "8080"),
-		Path: getEnv("HASH_FILE_PATH", "pong.log"),
+		Path: getEnv("LOG_FILE_PATH", "pong.log"),
 	}
 	return cfg
 }

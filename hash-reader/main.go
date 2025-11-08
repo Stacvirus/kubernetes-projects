@@ -11,11 +11,11 @@ import (
 )
 
 type Path struct {
-	value string
+	url string
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	content, err := external.GetRequest("http://localhost:5001/pings")
+func (p *Path) handler(w http.ResponseWriter, r *http.Request) {
+	content, err := external.GetRequest(p.url)
 	if err != nil {
 		log.Printf("Error fetching content: %v", err)
 		http.Error(w, "Error fetching content from pong service", http.StatusInternalServerError)
@@ -31,18 +31,19 @@ func main() {
 		log.Println("No .env file found")
 	}
 	port := os.Getenv("PORT")
+	pongURL := os.Getenv("PONG_SERVICE_URL")
 
 	// path := os.Getenv("HASH_FILE_PATH")
 	// if path == "" {
 	// 	path = "logs.log"
 	// }
-	// p := &Path{value: path}
+	p := &Path{url: pongURL}
 
 	log.Printf("Starting hash reader app on :%s", port)
 
 	// log.Printf("Reading pings count from file: %s", path)
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", p.handler)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 		log.Fatalf("Server failed: %v", err)
