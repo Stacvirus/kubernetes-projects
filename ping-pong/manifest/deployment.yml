@@ -24,14 +24,11 @@ spec:
           - name: shared-hash
             mountPath: /usr/src/app/files
           env:
-            - name: HASH_FILE_PATH
-              value: "/usr/src/app/files/hashes.log"
-        - name: hashgenerator
-          image: hash-generator-go:latest 
+            - name: LOG_FILE_PATH
+              value: "/usr/src/app/files/pong.log"
+        - name: hashreader
+          image: hash-reader:latest
           imagePullPolicy: IfNotPresent
-          volumeMounts:
-          - name: shared-hash
-            mountPath: /usr/src/app/files
           env:
-            - name: HASH_FILE_PATH
-              value: "/usr/src/app/files/hashes.log"
+            - name: PONG_SERVICE_URL
+              value: "http://ping-pong-svc:2453/pings"

@@ -11,16 +11,30 @@ spec:
       protocol: TCP
       targetPort: 5001 # This is the target port
 
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: hashgenerator-svc
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app: requestcount # This is the app as declared in the deployment.
+#   ports:
+#     - port: 1234 # This is a port that is available to the cluster, in this case it can be ~ anything
+#       protocol: TCP
+#       targetPort: 4040 # This is the target port
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hashgenerator-svc
+  name: hashreader-svc
 spec:
   type: ClusterIP
   selector:
     app: requestcount # This is the app as declared in the deployment.
   ports:
-    - port: 1234 # This is a port that is available to the cluster, in this case it can be ~ anything
+    - port: 1334 # This is a port that is available to the cluster, in this case it can be ~ anything
       protocol: TCP
-      targetPort: 4040 # This is the target port
+      targetPort: 5000 # This is the target port
