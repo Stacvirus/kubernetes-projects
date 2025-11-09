@@ -30,7 +30,11 @@ func main() {
 	log.Printf("Starting TODO app on :%s", port)
 
 	const cacheDuration = 10 * time.Minute
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/", fs)
+
+	http.HandleFunc("/image", func(w http.ResponseWriter, r *http.Request) {
 		// Check if cached image is still fresh
 		needNew := true
 		if modTime, err := file.ReadFileModTime(imagePath); err == nil {
@@ -50,40 +54,6 @@ func main() {
 				log.Printf("Failed to fetch image: %v", err)
 			}
 		}
-		// Tell the browser we’re sending HTML
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-		// Write simple HTML response
-		html := `
-		<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<title>TODO App</title>
-		</head>
-		<body>
-			<h1>The project App</h1>
-			<img src="/image" alt="Random image" width="200"/><br/>
-
-			<input type="text" placeholder="" />
-			<button>create todo</button>
-
-			<ul>
-				<li>Learn JavaScript</li>
-				<li>Learn React</li>
-				<li>Build a project</li>
-			</ul>
-
-			<p>DevOps with Kubernetes 2025</p>
-		</body>
-		</html>
-		`
-
-		// Write it to the response
-		w.Write([]byte(html))
-	})
-
-	http.HandleFunc("/image", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, imagePath)
 	})
 

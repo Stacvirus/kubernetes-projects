@@ -8,6 +8,7 @@ import (
 	"todo-backend/internal/store"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 type Server struct {
@@ -29,5 +30,13 @@ func New() *Server {
 }
 
 func (s *Server) Start(addr string) error {
-	return http.ListenAndServe(addr, s.router)
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+	handler := c.Handler(s.router)
+
+	return http.ListenAndServe(addr, handler)
 }
