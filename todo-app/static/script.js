@@ -1,5 +1,6 @@
 async function fetchTodos() {
-  const response = await fetch('http://localhost:8080/todos');
+  console.log("Fetching todos from ", window.BACKEND_URL);
+  const response = await fetch(window.BACKEND_URL);
   const todos = await response.json();
   const list = document.getElementById('todo-list');
   list.innerHTML = '';
@@ -17,7 +18,7 @@ async function createTodo() {
   if (!text) return;
 
   try {
-    await fetch('http://localhost:8080/todos', {
+    await fetch(window.BACKEND_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ task: text }),

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"text/template"
 	"time"
 
 	"todo-app/internal/file"
@@ -31,8 +32,14 @@ func main() {
 
 	const cacheDuration = 10 * time.Minute
 
-	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/", fs)
+	// fs := http.FileServer(http.Dir("./static"))
+	template := template.Must(template.ParseFiles("static/index.html"))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data := struct{ BackendURL string }{BackendURL: os.Getenv("BACKEND_URL")}
+		template.Execute(w, data)
+	})
+
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	http.HandleFunc("/image", func(w http.ResponseWriter, r *http.Request) {
 		// Check if cached image is still fresh
