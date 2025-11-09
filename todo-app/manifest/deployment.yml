@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todo-app-dep
+  name: todo-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: todoapp
+      app: todo
   template:
     metadata:
       labels:
-        app: todoapp
+        app: todo
     spec:
       volumes:
         - name: todoapp-storage
@@ -26,3 +26,8 @@ spec:
           env:
             - name: CACHE_FILE_PATH
               value: "/usr/src/app/data"
+            - name: BACKEND_URL
+              value: "http://todo-backend-svc:2245/todos"
+        - name: todo-backend
+          image: todo-backend:latest
+          imagePullPolicy: IfNotPresent

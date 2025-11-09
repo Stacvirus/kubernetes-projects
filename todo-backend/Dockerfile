@@ -11,7 +11,7 @@ COPY . .
 RUN go mod download
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o todo-app .
+RUN CGO_ENABLED=0 GOOS=linux go build -o todo-backend .
 
 # Use minimal alpine image for final container
 FROM alpine:3.18
@@ -20,11 +20,11 @@ FROM alpine:3.18
 WORKDIR /app
 
 # Copy binary from builder
-COPY --from=builder /app/todo-app .
+COPY --from=builder /app/todo-backend .
 COPY --from=builder /app/.env .
 
 # Set default port
-ENV PORT=8000
+ENV PORT=8080
 
 # Run the application
-CMD ["./todo-app"]
+CMD ["./todo-backend"]
