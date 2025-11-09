@@ -10,6 +10,11 @@ type MemoryStoreHandler struct {
 	Store *store.MemoryStore
 }
 
+// Constructor for MemoryStoreHandler
+func NewMemoryStoreHandler(store *store.MemoryStore) *MemoryStoreHandler {
+	return &MemoryStoreHandler{Store: store}
+}
+
 // Creates a new Todo and save in the memory store
 func (m *MemoryStoreHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	var todoReq struct {

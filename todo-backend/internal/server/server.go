@@ -16,7 +16,7 @@ type Server struct {
 
 func New() *Server {
 	store := store.NewMemoryStore()
-	handler := &handlers.MemoryStoreHandler{Store: store}
+	handler := handlers.NewMemoryStoreHandler(store)
 
 	r := mux.NewRouter()
 	r.Use(middleware.Logging)
