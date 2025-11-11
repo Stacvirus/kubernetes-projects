@@ -22,6 +22,7 @@ WORKDIR /app
 # Copy binary from builder
 COPY --from=builder /app/todo-app .
 COPY --from=builder /app/.env .
+COPY --from=builder /app/static ./static
 
 # Set default port
 ENV PORT=8000

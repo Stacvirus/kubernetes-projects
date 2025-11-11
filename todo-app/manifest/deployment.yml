@@ -27,7 +27,7 @@ spec:
             - name: CACHE_FILE_PATH
               value: "/usr/src/app/data"
             - name: BACKEND_URL
-              value: "http://todo-backend-svc:2245/todos"
+              value: "http://localhost:8081/todos"
         - name: todo-backend
           image: todo-backend:latest
           imagePullPolicy: IfNotPresent
