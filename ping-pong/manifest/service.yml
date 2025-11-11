@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ping-pong-svc
+  namespace: exercises
 spec:
   type: ClusterIP
   selector:
@@ -30,6 +31,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: hashreader-svc
+  namespace: exercises
 spec:
   type: ClusterIP
   selector:
