@@ -31,5 +31,26 @@ spec:
           image: hash-reader:latest
           imagePullPolicy: IfNotPresent
           env:
+            - name: FILE_PATH
+              value: "/usr/src/app/files/information.txt"
             - name: PONG_SERVICE_URL
-              value: "http://ping-pong-svc:2453/pings"
+              valueFrom:
+                configMapKeyRef:
+                  name: hash-config
+                  key: PONG_SERVICE_URL
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: hash-config
+                  key: MESSAGE
+          volumeMounts:
+            - name: text
+              mountPath: /usr/src/app/files
+              readOnly: true
+      volumes:
+        - name: text
+          configMap:
+            name: hash-config
+            items:
+            - key: "information.txt"
+            path: "information.txt"

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hash-config
+  namespace: exercises
+data:
+  MESSAGE: "hello world"
+  PONG_SERVICE_URL: "http://ping-pong-svc:2453/pings"
+  
+  information.txt: |
+    this text is from file
