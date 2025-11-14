@@ -17,6 +17,12 @@ spec:
         - name: shared-hash
           persistentVolumeClaim:
             claimName: hash-claim
+        - name: text
+          configMap:
+            name: hash-config
+            items:
+            - key: "information.txt"
+              path: "information.txt"
       containers:
         - name: pingpong
           image: ping-pong:latest
@@ -47,10 +53,3 @@ spec:
             - name: text
               mountPath: /usr/src/app/files
               readOnly: true
-      volumes:
-        - name: text
-          configMap:
-            name: hash-config
-            items:
-            - key: "information.txt"
-            path: "information.txt"
