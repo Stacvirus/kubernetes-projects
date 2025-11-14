@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+  namespace: project
+data:
+  CACHE_FILE_PATH: "/usr/src/app/data"
+  BACKEND_URL: "http://localhost:8081/todos"

@@ -24,11 +24,9 @@ spec:
           volumeMounts:
           - name: todoapp-storage
             mountPath: /usr/src/app/data
-          env:
-            - name: CACHE_FILE_PATH
-              value: "/usr/src/app/data"
-            - name: BACKEND_URL
-              value: "http://localhost:8081/todos"
+          envFrom:
+            - configMapRef:
+                name: todo-config
         - name: todo-backend
           image: todo-backend:latest
           imagePullPolicy: IfNotPresent
