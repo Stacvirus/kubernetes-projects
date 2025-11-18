@@ -6,14 +6,16 @@ import (
 	"ping-pong/internal/handlers"
 	"ping-pong/internal/middleware"
 	"ping-pong/internal/routes"
+	"ping-pong/internal/store"
 )
 
 type Server struct {
 	router http.Handler
+	store  store.Storage
 }
 
-func New(cfg *config.Config) *Server {
-	handler := handlers.NewHandleRequest(cfg.Path)
+func New(cfg *config.Config, store store.Storage) *Server {
+	handler := handlers.NewHandleRequest(cfg.Path, store)
 	mux := http.NewServeMux()
 	routes.RegisterRoutes(mux, handler)
 
@@ -21,6 +23,7 @@ func New(cfg *config.Config) *Server {
 
 	return &Server{
 		router: middleware,
+		store:  store,
 	}
 }
 
