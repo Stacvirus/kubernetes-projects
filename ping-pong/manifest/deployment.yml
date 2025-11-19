@@ -14,9 +14,6 @@ spec:
         app: requestcount
     spec:
       volumes:
-        - name: shared-hash
-          persistentVolumeClaim:
-            claimName: hash-claim
         - name: text
           configMap:
             name: hash-config
@@ -27,12 +24,11 @@ spec:
         - name: pingpong
           image: ping-pong:latest
           imagePullPolicy: IfNotPresent
-          volumeMounts:
-          - name: shared-hash
-            mountPath: /usr/src/app/files
           env:
             - name: LOG_FILE_PATH
               value: "/usr/src/app/files/pong.log"
+            - name: PG_ADDR
+              value: "postgres://stac:password@postgres-svc/pingpong?sslmode=disable"
         - name: hashreader
           image: hash-reader:latest
           imagePullPolicy: IfNotPresent

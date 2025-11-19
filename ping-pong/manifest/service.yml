@@ -40,3 +40,19 @@ spec:
     - port: 1334 # This is a port that is available to the cluster, in this case it can be ~ anything
       protocol: TCP
       targetPort: 5000 # This is the target port
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-svc
+  namespace: exercises
+  labels:
+    app: postgres
+spec:
+  ports:
+    - port: 5432
+      name: postgres
+  clusterIP: None
+  selector:
+    app: postgresapp
