@@ -13,11 +13,11 @@ import (
 
 type Server struct {
 	router *mux.Router
+	store  store.Repository
 }
 
-func New() *Server {
-	store := store.NewMemoryStore()
-	handler := handlers.NewMemoryStoreHandler(store)
+func New(repository store.Repository) *Server {
+	handler := handlers.NewTodoHandler(repository)
 
 	r := mux.NewRouter()
 	r.Use(middleware.Logging)
@@ -26,6 +26,7 @@ func New() *Server {
 
 	return &Server{
 		router: r,
+		store:  repository,
 	}
 }
 
