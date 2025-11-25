@@ -6,3 +6,4 @@ metadata:
 data:
   CACHE_FILE_PATH: "/usr/src/app/data"
   BACKEND_URL: "http://localhost:8081/todos"
+  PG_ADDR: "postgres://stac:password@postgres-svc/todo?sslmode=disable"

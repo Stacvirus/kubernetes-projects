@@ -26,3 +26,19 @@ spec:
     - port: 2245
       protocol: TCP
       targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-svc
+  namespace: project
+  labels:
+    app: postgres
+spec:
+  ports: 
+    - port: 5432
+      name: postgres
+  clusterIP: None
+  selector:
+    app: postgresapp

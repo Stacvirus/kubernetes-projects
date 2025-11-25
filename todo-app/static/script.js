@@ -7,7 +7,7 @@ async function fetchTodos() {
 
   todos && todos.forEach(todo => {
     const li = document.createElement('li');
-    li.textContent = todo.Task;
+    li.textContent = todo.task;
     list.appendChild(li);
   });
 }
