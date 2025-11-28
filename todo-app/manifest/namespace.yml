@@ -4,3 +4,19 @@ metadata:
   name: project
   labels:
     name: project
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prometheus
+  labels:
+    name: prometheus
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loki-stack
+  labels:
+    name: loki-stack
