@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"todo-backend/internal/models"
 	"todo-backend/internal/store"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type TodoHandler struct {
@@ -17,16 +20,33 @@ func NewTodoHandler(store store.Repository) *TodoHandler {
 	return &TodoHandler{Store: store}
 }
 
+type todoReq struct {
+	Task string `json:"task" validate:"required,min=3,max=140"`
+}
+
+func (t *todoReq) FromJson(r io.Reader) error {
+	return json.NewDecoder(r).Decode(t)
+}
+
+func (t *todoReq) Validate() error {
+	validate := validator.New()
+	return validate.Struct(t)
+}
+
 // Creates a new Todo and save in the memory store
 func (m *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
-	var todoReq struct {
-		Task string `json:"task"`
-	}
-
-	if err := json.NewDecoder(r.Body).Decode(&todoReq); err != nil {
+	var todoReq todoReq
+	if err := todoReq.FromJson(r.Body); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
+
+	if err := todoReq.Validate(); err != nil {
+		log.Println("error validating todo request:", err.Error())
+		http.Error(w, "Validation failed: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	todo := &models.Todo{
 		Task: todoReq.Task,
 	}
