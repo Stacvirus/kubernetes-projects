@@ -10,6 +10,11 @@ type TodoRepository struct {
 	db *sql.DB
 }
 
+func (r *TodoRepository) TestDB(ctx context.Context) bool {
+	err := r.db.PingContext(ctx)
+	return err == nil
+}
+
 func (r *TodoRepository) AddTodo(ctx context.Context, todo *models.Todo) error {
 	query := `
 		INSERT INTO todos (task)

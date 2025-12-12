@@ -74,3 +74,12 @@ func (t *TodoHandler) GetAllTodo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(todos)
 }
+
+func (t *TodoHandler) Health(w http.ResponseWriter, r *http.Request) {
+	if !t.Store.Todo.TestDB(r.Context()) {
+		http.Error(w, "database connection error", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("healthy"))
+}

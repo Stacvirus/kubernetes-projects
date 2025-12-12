@@ -15,6 +15,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Health check endpoint - doesn't depend on external services
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "healthy")
+}
+
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
@@ -63,6 +69,8 @@ func main() {
 		}
 		http.ServeFile(w, r, imagePath)
 	})
+
+	http.HandleFunc("/healthz", healthHandler)
 
 	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
