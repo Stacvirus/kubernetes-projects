@@ -5,7 +5,7 @@ metadata:
   namespace: exercises
 data:
   MESSAGE: "hello world"
-  PONG_SERVICE_URL: "http://ping-pong-svc:2453/pings"
+  PONG_SERVICE_URL: "http://localhost:5001/pings"
   
   information.txt: |
     this text is from file
