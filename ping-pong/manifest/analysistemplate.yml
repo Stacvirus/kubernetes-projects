@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: request-count-analysis
+  namespace: exercises
+spec:
+  metrics:
+  - name: request-count-analysis
+    interval: 30s
+    count: 3 # number of times to run the query
+    failureLimit: 0 # number of failed queries to tolerate before marking the analysis as failed
+    successCondition: result <= 0.001
+    failureCondition: result > 0.001
+    provider:
+      prometheus:
+        address: http://kube-prometheus-stack-1766-prometheus.prometheus.svc.cluster.local:9090
+        query: |
+          sum(
+            rate(container_cpu_usage_seconds_total{
+              namespace="exercises",
+              container!="",
+              image!=""
+            }[5m])
+          )

@@ -126,6 +126,8 @@ $ helm repo update
 $ kubectl create namespace prometheus
 $ helm install prometheus-community/kube-prometheus-stack --generate-name --namespace prometheus
 ```
+`kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1766-prometheus-0 9090:9090`
+
 # Adding loki for logs:
 ```
 $ helm repo add grafana https://grafana.github.io/helm-charts
@@ -143,3 +145,15 @@ $ kubectl get all -n loki-stack
 # Get Grafana 'admin' user password by running:
 
 `  kubectl --namespace prometheus get secrets kube-prometheus-stack-1766116194-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo `
+
+### Install argo rollout for custom deployment strategies in k8s clusters(CRDs)
+```
+kubectl create namespace argo-rollouts
+$ kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+```
+- Install Argo kubectl cli tool
+```
+$ curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+$ chmod +x kubectl-argo-rollouts-linux-amd64
+$ sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
+`

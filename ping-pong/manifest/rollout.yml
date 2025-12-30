@@ -1,0 +1,83 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: request-count-dep
+  namespace: exercises
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: requestcount
+  strategy:
+    canary:
+      steps:
+      - setWeight: 25
+      - analysis:
+          templates:
+          - templateName: request-count-analysis
+      - pause:
+          duration: 30s
+      - setWeight: 50
+      - pause:
+          duration: 30s
+  template:
+    metadata:
+      labels:
+        app: requestcount
+    spec:
+      volumes:
+        - name: text
+          configMap:
+            name: hash-config
+            items:
+            - key: "information.txt"
+              path: "information.txt"
+      containers:
+        - name: pingpong
+          image: ping-pong:0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5001
+          env:
+            - name: LOG_FILE_PATH
+              value: "/usr/src/app/files/pong.log"
+            - name: PG_ADDR
+              value: "postgres://stac:password@postgres-svc/pingpong?sslmode=disable"
+          # ReadinessProbe: ping database
+          readinessProbe:
+            httpGet:
+              path: /pings
+              port: 5001
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            failureThreshold: 3
+        - name: hashreader
+          image: hash-reader:0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FILE_PATH
+              value: "/usr/src/app/files/information.txt"
+            - name: PONG_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: hash-config
+                  key: PONG_SERVICE_URL
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: hash-config
+                  key: MESSAGE
+          volumeMounts:
+            - name: text
+              mountPath: /usr/src/app/files
+              readOnly: true
+          # ReadinessProbe: check it can reach ping-pong
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 10  # Give pingpong more time to start
+            periodSeconds: 5
+            failureThreshold: 10 
