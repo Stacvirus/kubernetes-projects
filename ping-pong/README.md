@@ -113,3 +113,33 @@ CREATE DATABASE pingpong;
 ```
 
 `k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2`
+
+## Intalling prometheus stack using helm
+
+```
+$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+$ helm repo add stable https://charts.helm.sh/stable
+$ helm repo update
+```
+
+```
+$ kubectl create namespace prometheus
+$ helm install prometheus-community/kube-prometheus-stack --generate-name --namespace prometheus
+```
+# Adding loki for logs:
+```
+$ helm repo add grafana https://grafana.github.io/helm-charts
+$ helm repo update
+$ kubectl create namespace loki-stack
+  namespace/loki-stack created
+
+$ helm upgrade --install loki --namespace=loki-stack grafana/loki-stack --set loki.image.tag=2.9.3
+
+$ kubectl get all -n loki-stack
+```
+# Example usage: Access grafana UI
+`$ kubectl -n prometheus port-forward kube-prometheus-stack-1602180058-grafana-59cd48d794-4459m 3000`
+
+# Get Grafana 'admin' user password by running:
+
+`  kubectl --namespace prometheus get secrets kube-prometheus-stack-1766116194-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo `
