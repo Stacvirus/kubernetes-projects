@@ -33,7 +33,7 @@ func New(repository store.Repository) *Server {
 func (s *Server) Start(addr string) error {
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions, http.MethodPut, http.MethodDelete},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 	})

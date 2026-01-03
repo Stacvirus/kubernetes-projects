@@ -2,13 +2,30 @@ async function fetchTodos() {
   console.log("Fetching todos from ", window.BACKEND_URL);
   const response = await fetch(window.BACKEND_URL);
   const todos = await response.json();
-  const list = document.getElementById('todo-list');
-  list.innerHTML = '';
+  const todoList = document.getElementById('todo-list');
+  const doneList = document.getElementById('done-list');
+  todoList.innerHTML = '';
+  doneList.innerHTML = '';
 
   todos && todos.forEach(todo => {
     const li = document.createElement('li');
-    li.textContent = todo.task;
-    list.appendChild(li);
+    li.textContent = `${todo.task} `;
+    if (todo.done === true) {
+      doneList.appendChild(li);
+    } else {
+      const newBtn = document.createElement('button');
+      newBtn.textContent = 'Mark as Done';
+      newBtn.addEventListener('click', async () => {
+        await fetch(`${window.BACKEND_URL}/${todo.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ done: true, task: todo.task }),
+        });
+        fetchTodos();
+      });
+      li.appendChild(newBtn);
+      todoList.appendChild(li);
+    }
   });
 }
 
