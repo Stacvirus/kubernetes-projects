@@ -2,40 +2,28 @@ package handlers
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
+	"strconv"
 	"todo-backend/internal/models"
+	"todo-backend/internal/models/dto"
 	"todo-backend/internal/store"
 
-	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux"
 )
 
 type TodoHandler struct {
 	Store store.Repository
 }
 
-// Constructor for MemoryStoreHandler
+// Constructor for RepositoryStoreHandler
 func NewTodoHandler(store store.Repository) *TodoHandler {
 	return &TodoHandler{Store: store}
 }
 
-type todoReq struct {
-	Task string `json:"task" validate:"required,min=3,max=140"`
-}
-
-func (t *todoReq) FromJson(r io.Reader) error {
-	return json.NewDecoder(r).Decode(t)
-}
-
-func (t *todoReq) Validate() error {
-	validate := validator.New()
-	return validate.Struct(t)
-}
-
 // Creates a new Todo and save in the memory store
 func (m *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
-	var todoReq todoReq
+	todoReq := &dto.CreateTodoRequest{}
 	if err := todoReq.FromJson(r.Body); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
@@ -73,6 +61,53 @@ func (t *TodoHandler) GetAllTodo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(todos)
+}
+
+func (t *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
+	// Extract ID from path
+	vars := mux.Vars(r)
+	idStr, ok := vars["id"]
+	if !ok {
+		http.Error(w, "missing todo id", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		http.Error(w, "invalid todo id", http.StatusBadRequest)
+		return
+	}
+
+	req := &dto.UpdateTodoRequest{}
+	if err := req.FromJson(r.Body); err != nil {
+		http.Error(w, "invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		log.Println("error validating update todo request:", err.Error())
+		http.Error(w, "validation failed: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Build model
+	todo := &models.Todo{
+		ID:   id,
+		Task: req.Task,
+		Done: req.Done,
+	}
+
+	// Update in DB
+	updatedTodo, err := t.Store.Todo.UpdateTodo(r.Context(), todo)
+	if err != nil {
+		log.Println("Error updating todo:", err)
+		http.Error(w, "failed to update todo", http.StatusInternalServerError)
+		return
+	}
+
+	// Respond
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(updatedTodo)
 }
 
 func (t *TodoHandler) Health(w http.ResponseWriter, r *http.Request) {

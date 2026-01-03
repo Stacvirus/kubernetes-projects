@@ -10,6 +10,7 @@ type Repository struct {
 	Todo interface {
 		AddTodo(context.Context, *models.Todo) error
 		GetTodos(context.Context) ([]*models.Todo, error)
+		UpdateTodo(context.Context, *models.Todo) (*models.Todo, error)
 		TestDB(context.Context) bool
 	}
 }
