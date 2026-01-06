@@ -1,0 +1,18 @@
+image:
+  registory: docker.io
+  repository: bitnamilegacy/nats
+  tag: 2.11.8-debian-12-r0
+  pullPolicy: IfNotPresent
+
+auth:
+  enabled: <strong>false</strong>
+
+metrics: # Enable Prometheus metrics
+  enabled: <strong>true</strong>
+  image:
+    registory: docker.io
+    repository: bitnamilegacy/nats-exporter
+    tag: 0.17.3-debian-12-r8
+  serviceMonitor: # Custom Resource Definition to monitor services
+    enabled: <strong>true</strong>
+    namespace: prometheus
