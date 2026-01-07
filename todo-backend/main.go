@@ -4,6 +4,7 @@ import (
 	"log"
 	"todo-backend/internal/config"
 	"todo-backend/internal/db"
+	"todo-backend/internal/nats"
 	"todo-backend/internal/server"
 	"todo-backend/internal/store"
 )
@@ -17,6 +18,14 @@ func main() {
 	}
 	defer db.Close()
 	log.Printf("database connection pool established")
+
+	// Connect to NATS
+	log.Printf("connecting to NATS server...")
+	nc, err := nats.NewNatsClient(*cfg)
+	if err != nil {
+		log.Panic("failed to connect to NATS: ", err)
+	}
+	defer nc.Conn.Close()
 
 	repository := store.NewRepository(db)
 

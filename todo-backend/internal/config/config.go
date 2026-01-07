@@ -14,6 +14,10 @@ type Config struct {
 	MaxOpenConns int
 	MaxIdleConns int
 	MaxIdleTime  string
+	NatsURL      string
+	NatsUser     string
+	NatsPassword string
+	NatsSubject  string
 }
 
 func Load() *Config {
@@ -24,6 +28,10 @@ func Load() *Config {
 		MaxOpenConns: getInt("PG_MAX_OPEN_CONNS", 30),
 		MaxIdleConns: getInt("PG_MAX_IDLE_CONNS", 30),
 		MaxIdleTime:  getString("PG_MAX_IDLE_TIME", "15m"),
+		NatsURL:      getString("NATS_URL", "nats://localhost:4222"),
+		NatsUser:     getString("NATS_USER", "your-user"),
+		NatsPassword: getString("NATS_PASSWORD", "your-password"),
+		NatsSubject:  getString("NATS_SUBJECT", "todo.operations"),
 	}
 }
 
