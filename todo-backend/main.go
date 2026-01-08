@@ -29,7 +29,7 @@ func main() {
 
 	repository := store.NewRepository(db)
 
-	s := server.New(repository)
+	s := server.New(repository, nc)
 	log.Printf("🚀 Starting server on :%s", cfg.Port)
 	if err := s.Start(":" + cfg.Port); err != nil {
 		log.Fatalf("failed to start server: %v", err)

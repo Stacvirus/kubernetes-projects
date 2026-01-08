@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"todo-backend/internal/handlers"
 	"todo-backend/internal/middleware"
+	"todo-backend/internal/nats"
 	"todo-backend/internal/routes"
 	"todo-backend/internal/store"
 
@@ -16,8 +17,8 @@ type Server struct {
 	store  store.Repository
 }
 
-func New(repository store.Repository) *Server {
-	handler := handlers.NewTodoHandler(repository)
+func New(repository store.Repository, nats *nats.NatClient) *Server {
+	handler := handlers.NewTodoHandler(repository, nats)
 
 	r := mux.NewRouter()
 	r.Use(middleware.Logging)

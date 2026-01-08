@@ -34,7 +34,7 @@ func connect(config config.Config) (*nats.Conn, error) {
 	return nc, nil
 }
 
-func (c *NatClient) Publish(subject string, message string) error {
+func (c *NatClient) Publish(message string) error {
 	if c.Subject == "" {
 		return errors.New("nats subject is not set")
 	}

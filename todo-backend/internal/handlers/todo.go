@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"todo-backend/internal/models"
 	"todo-backend/internal/models/dto"
+	"todo-backend/internal/nats"
 	"todo-backend/internal/store"
 
 	"github.com/gorilla/mux"
@@ -14,15 +15,16 @@ import (
 
 type TodoHandler struct {
 	Store store.Repository
+	Nats  *nats.NatClient
 }
 
 // Constructor for RepositoryStoreHandler
-func NewTodoHandler(store store.Repository) *TodoHandler {
-	return &TodoHandler{Store: store}
+func NewTodoHandler(store store.Repository, nats *nats.NatClient) *TodoHandler {
+	return &TodoHandler{Store: store, Nats: nats}
 }
 
 // Creates a new Todo and save in the memory store
-func (m *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
+func (t *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	todoReq := &dto.CreateTodoRequest{}
 	if err := todoReq.FromJson(r.Body); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -39,12 +41,15 @@ func (m *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 		Task: todoReq.Task,
 	}
 
-	err := m.Store.Todo.AddTodo(r.Context(), todo)
+	err := t.Store.Todo.AddTodo(r.Context(), todo)
 	if err != nil {
 		log.Println("Error adding todo:", err)
 		http.Error(w, "Failed to create todo", http.StatusInternalServerError)
 		return
 	}
+
+	// publish message to nats server on another current thread to no block the current flow
+	go t.Nats.Publish(todo.Task)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(todo)
@@ -104,6 +109,9 @@ func (t *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to update todo", http.StatusInternalServerError)
 		return
 	}
+
+	// publish message to nats server on another current thread to no block the current flow
+	go t.Nats.Publish(todo.Task)
 
 	// Respond
 	w.Header().Set("Content-Type", "application/json")
