@@ -61,8 +61,9 @@ func main() {
 	}()
 
 	// Subscribe to a subject
+	queueGroup := "broadcaster-workers"
 	subject := config.NatsSubject
-	_, err = nc.Subscribe(subject, func(m *nats.Msg) {
+	_, err = nc.QueueSubscribe(subject, queueGroup, func(m *nats.Msg) {
 		msg := string(m.Data)
 
 		log.Printf("Received message: %s", msg)

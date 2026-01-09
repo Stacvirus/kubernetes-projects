@@ -75,7 +75,7 @@ spec:
     spec:
       containers:
         - name: broadcast
-          image: broadcast:latest
+          image: broadcast:0.2
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
