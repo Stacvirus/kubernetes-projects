@@ -1,4 +1,8 @@
-📘 Database Setup in Kubernetes (Manual SQL Initialization)
+### Using PV on a k8s cluster
+- Creating directory to hold actual data(locally k3d)
+`docker exec k3d-k3s-default-agent-0 mkdir -p /tmp/kube`
+
+### Database Setup in Kubernetes (Manual SQL Initialization)
 
 This document explains how to manually initialize the PostgreSQL database running inside the Kubernetes cluster.
 This method is useful during development or when you need to quickly bootstrap your tables without using migration tools or automation.
@@ -6,9 +10,9 @@ This method is useful during development or when you need to quickly bootstrap y
 Note:
 This is a quick and manual method. For production environments, automated migrations (e.g., Kubernetes Jobs or a migration CI pipeline) are recommended.
 
-🚀 Overview
+## 🚀 Overview
 
-We have deployed PostgreSQL into the Kubernetes cluster using a StatefulSet:
+- We have deployed PostgreSQL into the Kubernetes cluster using a StatefulSet:
 ```
 Namespace: exercises
 
@@ -23,7 +27,7 @@ User: stac
 Password: password
 ```
 
-PostgreSQL automatically creates the user and database on first startup based on the environment variables:
+- PostgreSQL automatically creates the user and database on first startup based on the environment variables:
 ```
 env:
   - name: POSTGRES_USER
@@ -37,36 +41,36 @@ env:
 However, tables and schema are NOT created automatically.
 We must create them manually using SQL.
 
-🧩 Step 1 — Exec Into the PostgreSQL Pod
+# 🧩 Step 1 — Exec Into the PostgreSQL Pod
 
-Find the pod:
+- Find the pod:
 
 `kubectl get pods -n exercises`
 
 
-It should look like:
+- It should look like:
 
 `postgres-stset-0`
 
 
-Open an interactive shell inside the database pod:
+- Open an interactive shell inside the database pod:
 
 `kubectl exec -it -n exercises postgres-stset-0 -- sh`
 
-🧩 Step 2 — Connect to PostgreSQL
+# 🧩 Step 2 — Connect to PostgreSQL
 
-Once inside the pod, connect to the pingpong database using the default user:
+- Once inside the pod, connect to the pingpong database using the default user:
 
 `psql -U stac pingpong`
 
 
-If the connection succeeds, you will see:
+- If the connection succeeds, you will see:
 
 `pingpong=#`
 
-🧩 Step 3 — Create Required Tables
+# 🧩 Step 3 — Create Required Tables
 
-Run the SQL statements directly inside the psql console.
+- Run the SQL statements directly inside the psql console.
 
 Create the lines table:
 ```
@@ -82,7 +86,7 @@ Confirm the table exists:
 `\d lines`
 
 
-You should see the schema.
+- You should see the schema.
 
 🧪 Step 4 — Test the Application
 
@@ -91,7 +95,7 @@ The table exists, so queries like INSERT or SELECT should work without errors.
 
 Check logs:
 
-kubectl logs -n exercises <your-app-pod>
+`kubectl logs -n exercises <your-app-pod>`
 
 
 You should no longer see:

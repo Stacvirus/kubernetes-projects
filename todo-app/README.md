@@ -88,6 +88,9 @@ PORT=3000 go run main.go
 |----------|-------------|---------|
 | PORT | Server port number | 8000 |
 
+## Running app container on k8s pod using kustomize
+`kubectl apply -k .`
+
 ## Installing NATS on k8s cluster
 `$ helm install --set metrics.enabled=true,auth.enabled=false my-nats oci://registry-1.docker.io/bitnamicharts/nats`
 

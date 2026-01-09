@@ -42,3 +42,18 @@ spec:
   clusterIP: None
   selector:
     app: postgresapp
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broadcast-svc
+  namespace: project
+spec:
+  type: ClusterIP
+  selector:
+    app: broadcast
+  ports:
+    - port: 8585
+      protocol: TCP
+      targetPort: 8080

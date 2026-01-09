@@ -3,10 +3,15 @@ package main
 import (
 	"broadcast/config"
 	"broadcast/telegram"
+	"fmt"
 	"log"
+	"net/http"
+	"sync/atomic"
 
 	"github.com/nats-io/nats.go"
 )
+
+var natsHealthy atomic.Bool
 
 func main() {
 	config := config.Load()
@@ -18,13 +23,42 @@ func main() {
 	)
 
 	// Connect to NATS server
-	nc, err := nats.Connect(config.NatsURL, nats.UserInfo(config.NatsUser, config.NatsPassword))
+	nc, err := nats.Connect(
+		config.NatsURL,
+		nats.UserInfo(config.NatsUser, config.NatsPassword),
+		nats.DisconnectErrHandler(func(_ *nats.Conn, err error) {
+			log.Println("❌ Disconnected from NATS server:", err)
+			natsHealthy.Store(false)
+		}),
+		nats.ReconnectHandler(func(nc *nats.Conn) {
+			log.Println("✅ Reconnected to NATS server")
+			natsHealthy.Store(true)
+		}),
+	)
 	if err != nil {
 		log.Panic("Nats connection failed:", err)
 	}
 	defer nc.Close()
 
-	log.Println("Connected to NATS server")
+	natsHealthy.Store(true)
+	log.Println("✅ Connected to NATS server")
+
+	// Health endpoint
+	go func() {
+		http.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+			if !natsHealthy.Load() {
+				log.Println("❌ Health check failed: NATS unhealthy")
+				http.Error(w, "NATS unhealthy", http.StatusServiceUnavailable)
+				return
+			}
+			log.Println("🩺 Health check OK")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("ok"))
+		})
+
+		log.Printf("🩺 Health endpoint listening on :%s/healthz", config.Port)
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", config.Port), nil))
+	}()
 
 	// Subscribe to a subject
 	subject := config.NatsSubject
