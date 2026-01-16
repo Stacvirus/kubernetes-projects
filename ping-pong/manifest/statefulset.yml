@@ -20,11 +20,20 @@ spec:
           imagePullPolicy: "IfNotPresent"
           env:
             - name: POSTGRES_USER
-              value: "stac"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
-              value: "password"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
-              value: "pingpong"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_DB
           ports: 
             - name: postgres
               containerPort: 5432

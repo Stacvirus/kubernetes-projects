@@ -2,11 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - manifest/namespace.yml
+  - manifest/configMap.yml
+  - manifest/secret.yml
   - manifest/storageclassname.yml
   - manifest/persistentvolume.yml
   - manifest/persistentvolumeclaim.yml
+  - manifest/db-init-job.yml
   - manifest/statefulset.yml
-  - manifest/configMap.yml
   - manifest/analysistemplate.yml
   - manifest/rollout.yml
   - manifest/service.yml
