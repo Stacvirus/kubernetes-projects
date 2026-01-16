@@ -4,6 +4,7 @@ resources:
   - manifest/namespace.yml
   - manifest/deployment.yml
   - manifest/service.yml
+  - manifest/ingress.yml
 images:
   - name: hash-generator
     newName: hash-generator
