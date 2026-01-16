@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifest/namespace.yml
+  - manifest/deployment.yml
+  - manifest/service.yml
+images:
+  - name: hash-generator
+    newName: hash-generator
+    newTag: 1.0.0
+  - name: hash-reader
+    newName: hash-reader
+    newTag: 1.0.0

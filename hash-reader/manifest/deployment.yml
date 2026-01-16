@@ -18,7 +18,7 @@ spec:
           emptyDir: {}
       containers:
         - name: hash-generator
-          image: hash-generator-go:latest 
+          image: hash-generator:latest 
           imagePullPolicy: IfNotPresent
           volumeMounts:
           - name: shared-hash
