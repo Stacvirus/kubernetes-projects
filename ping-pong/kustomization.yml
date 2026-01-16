@@ -10,3 +10,10 @@ resources:
   - manifest/rollout.yml
   - manifest/service.yml
   - manifest/ingress.yml
+images:
+  - name: ping-pong
+    newName: ping-pong
+    newTag: 1.0.0
+  - name: hash-reader
+    newName: hash-reader
+    newTag: 1.0.0
