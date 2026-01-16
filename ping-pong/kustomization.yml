@@ -4,9 +4,6 @@ resources:
   - manifest/namespace.yml
   - manifest/configMap.yml
   - manifest/secret.yml
-  - manifest/storageclassname.yml
-  - manifest/persistentvolume.yml
-  - manifest/persistentvolumeclaim.yml
   - manifest/db-init-job.yml
   - manifest/statefulset.yml
   - manifest/analysistemplate.yml
