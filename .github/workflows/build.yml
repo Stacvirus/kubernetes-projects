@@ -39,10 +39,10 @@ jobs:
         working-directory: ./hash-reader
         run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/hash-reader:$GITHUB_SHA
 
-      - name: commit kustomization.yaml to GitHub
+      - name: commit kustomization.yml to GitHub
         uses: EndBug/add-and-commit@v9
         with:
           add: |
-            ping-pong/kustomization.yaml
-            hash-reader/kustomization.yaml
+            ping-pong/kustomization.yml
+            hash-reader/kustomization.yml
           message: "chore: update image tags to ${{ github.sha }}"
