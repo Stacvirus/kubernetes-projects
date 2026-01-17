@@ -11,9 +11,9 @@ resources:
   - manifest/service.yml
   - manifest/ingress.yml
 images:
-  - name: ping-pong
-    newName: ping-pong
+  - name: stacvirus/ping-pong
+    newName: stacvirus/ping-pong
     newTag: 1.0.0
-  - name: hash-reader
-    newName: hash-reader
+  - name: stacvirus/hash-reader
+    newName: stacvirus/hash-reader
     newTag: 1.0.0
