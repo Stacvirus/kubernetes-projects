@@ -11,7 +11,7 @@ curl -X POST http://localhost:8080/todos   -H "Content-Type: application/json"  
 `go get github.com/nats-io/nats.go`
 
 ## Get Nats credentials from k8s
-`kubectl get secret my-nats -o yaml`
+`kubectl get secret my-nats -o jsonpath='{.data.nats-server\.conf}' | base64 --decode`
 
 ### Installing ArgoCD in our k8s cluster
 - create a name space
@@ -22,9 +22,12 @@ curl -X POST http://localhost:8080/todos   -H "Content-Type: application/json"  
 
 - Openning access to Argocd
 `$ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'`
+or locally:
+`$ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'`
+simplest: `$ kubectl port-forward svc/argocd-server -n argocd 8080:443`
 
 - Getting credentials(decode the result as it a base64 value)
-`$ kubectl get -n argocd secrets argocd-initial-admin-secret -o yaml`
+`$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode`
 
 ### GitOps Installing ArgoCD in our k8s cluster
 `

@@ -115,6 +115,7 @@ psql -U stac
 DROP DATABASE pingpong;
 CREATE DATABASE pingpong;
 ```
+### Launching a k3s on docker using k3d
 
 `k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2`
 
@@ -152,7 +153,7 @@ $ kubectl get all -n loki-stack
 
 ### Install argo rollout for custom deployment strategies in k8s clusters(CRDs)
 ```
-kubectl create namespace argo-rollouts
+$ kubectl create namespace argo-rollouts
 $ kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```
 - Install Argo kubectl cli tool

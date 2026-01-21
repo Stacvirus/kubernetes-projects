@@ -19,7 +19,7 @@ spec:
             claimName: todoapp-claim
       containers:
         - name: todoapp
-          image: todo-app:latest
+          image: stacvirus/todo-app:1.0.0
           imagePullPolicy: IfNotPresent
           volumeMounts:
           - name: todoapp-storage
@@ -40,7 +40,7 @@ spec:
                path: /healthz
                port: 8000
         - name: todo-backend
-          image: todo-backend:1.1
+          image: stacvirus/todo-backend:1.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -75,7 +75,7 @@ spec:
     spec:
       containers:
         - name: broadcast
-          image: broadcast:0.2
+          image: stacvirus/broadcast:1.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

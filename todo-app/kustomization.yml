@@ -9,3 +9,10 @@ resources:
   - manifest/deployment.yml
   - manifest/service.yml
   - manifest/ingress.yml
+images:
+  - name: stacvirus/todo-app
+    newTag: 1.0.0
+  - name: stacvirus/todo-backend
+    newTag: 1.0.0
+  - name: stacvirus/broadcast
+    newTag: 1.0.0
