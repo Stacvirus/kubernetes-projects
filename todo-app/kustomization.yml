@@ -1,21 +1,21 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - manifest/namespace.yml
-  - manifest/configmap.yml
-  - manifest/secret.yml
-  - manifest/db-init.yml
-  - manifest/storageclassname.yml
-  - manifest/persistentvolume.yml
-  - manifest/persistentvolumeclaim.yml
-  - manifest/statefulset.yml
-  - manifest/deployment.yml
-  - manifest/service.yml
-  - manifest/ingress.yml
+- manifest/namespace.yml
+- manifest/configmap.yml
+- manifest/secret.yml
+- manifest/db-init.yml
+- manifest/storageclassname.yml
+- manifest/persistentvolume.yml
+- manifest/persistentvolumeclaim.yml
+- manifest/statefulset.yml
+- manifest/deployment.yml
+- manifest/service.yml
+- manifest/ingress.yml
 images:
-  - name: stacvirus/todo-app
-    newTag: 1.0.0
-  - name: stacvirus/todo-backend
-    newTag: 1.0.0
-  - name: stacvirus/broadcast
-    newTag: 1.0.0
+- name: stacvirus/broadcast
+  newTag: 3675d498c1bab5a6f00fd5a81222dde9f4c0243f
+- name: stacvirus/todo-app
+  newTag: 3675d498c1bab5a6f00fd5a81222dde9f4c0243f
+- name: stacvirus/todo-backend
+  newTag: 3675d498c1bab5a6f00fd5a81222dde9f4c0243f
