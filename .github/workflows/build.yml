@@ -23,26 +23,31 @@ jobs:
       # tag image with the GitHub SHA to get a unique tag
       - name: Build and publish backends
         run: |-
-          docker build --tag ${{ secrets.DOCKERHUB_USERNAME }}/ping-pong:${GITHUB_SHA} ./ping-pong
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ping-pong:${GITHUB_SHA}
-          docker build --tag ${{ secrets.DOCKERHUB_USERNAME }}/hash-reader:${GITHUB_SHA} ./hash-reader
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/hash-reader:${GITHUB_SHA}
+          docker build --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:${GITHUB_SHA} ./todo-app
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:${GITHUB_SHA}
+          docker build --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:${GITHUB_SHA} ./todo-backend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:${GITHUB_SHA}
+          docker build --tag ${{ secrets.DOCKERHUB_USERNAME }}/broadcast:${GITHUB_SHA} ./broadcast
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/broadcast:${GITHUB_SHA}
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
-      - name: Use right image for ping-pong
-        working-directory: ./ping-pong
-        run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/ping-pong:$GITHUB_SHA
+      - name: Use right image for todo-app
+        working-directory: ./todo-app
+        run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:$GITHUB_SHA
 
-      - name: Use right image for hash-reader
-        working-directory: ./hash-reader
-        run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/hash-reader:$GITHUB_SHA
+      - name: Use right image for todo-backend
+        working-directory: ./todo-app
+        run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:$GITHUB_SHA
+
+      - name: Use right image for broadcast
+        working-directory: ./todo-app
+        run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/broadcast:$GITHUB_SHA
 
       - name: commit kustomization.yml to GitHub
         uses: EndBug/add-and-commit@v9
         with:
           add: |
-            ping-pong/kustomization.yml
-            hash-reader/kustomization.yml
+            todo-app/kustomization.yml
           message: "chore: update image tags to ${{ github.sha }}"
