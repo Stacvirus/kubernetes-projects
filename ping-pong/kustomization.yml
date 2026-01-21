@@ -15,4 +15,4 @@ images:
   newName: stacvirus/hash-reader
   newTag: 1.0.0
 - name: stacvirus/ping-pong
-  newTag: ed1550eec849b3b8615f19ac64ffd55f1d9b45dc
+  newTag: 8aa0aaa9b9513ad8aebe9d0fbee82e06215c367f
