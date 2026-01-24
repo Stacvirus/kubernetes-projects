@@ -1,0 +1,11 @@
+kind: Service
+metadata:
+  name: broadcast-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: broadcast
+  ports:
+    - port: 8585
+      protocol: TCP
+      targetPort: 8585

@@ -1,0 +1,14 @@
+resources:
+  - secret.yml
+  - configmap.yml
+  - storageclassname.yml
+  - pv.yml
+  - pvc.yml
+  - db-init.yml
+  - statefulset.yml
+  - postgres-service.yml
+  - todo-deployment.yml
+  - broadcast-deployment.yml
+  - todo-service.yml
+  - broadcast-service.yml
+  - ingress.yml
