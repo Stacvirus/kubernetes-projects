@@ -7,8 +7,8 @@ resources:
 - ../../base
 - namespace.yaml
 
-patchesStrategicMerge:
-- configmap.yml
+patches:
+- path: configmap.yml
 
 images:
 - name: stacvirus/broadcast
