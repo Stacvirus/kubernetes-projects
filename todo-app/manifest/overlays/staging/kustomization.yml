@@ -4,16 +4,16 @@ kind: Kustomization
 namespace: staging
 
 resources:
-  - ../../base
-  - namespace.yaml
+- ../../base
+- namespace.yaml
 
 patchesStrategicMerge:
-  - configmap.yml
+- configmap.yml
 
 images:
-  - name: stacvirus/broadcast
-    newTag: 1.0.0
-  - name: stacvirus/todo-app
-    newTag: 1.0.0
-  - name: stacvirus/todo-backend
-    newTag: 1.0.0
+- name: stacvirus/broadcast
+  newTag: 27044f489379e99c4fdf14068bdde6cb2e7b1ffb
+- name: stacvirus/todo-app
+  newTag: 27044f489379e99c4fdf14068bdde6cb2e7b1ffb
+- name: stacvirus/todo-backend
+  newTag: 27044f489379e99c4fdf14068bdde6cb2e7b1ffb
