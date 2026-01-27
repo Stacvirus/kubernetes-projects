@@ -7,7 +7,7 @@ resources:
   - ../../base
   - namespace.yaml
 
-patches:
+patchesStrategicMerge:
 
 images:
   - name: stacvirus/broadcast
