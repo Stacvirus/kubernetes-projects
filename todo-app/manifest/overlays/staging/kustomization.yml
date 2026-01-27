@@ -5,7 +5,7 @@ namespace: staging
 
 resources:
 - ../../base
-- namespace.yaml
+- namespace.yml
 
 patches:
 - path: configmap.yml
