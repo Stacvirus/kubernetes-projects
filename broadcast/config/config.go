@@ -16,6 +16,7 @@ type Config struct {
 	NatsSubject      string
 	TelegramBotToken string
 	TelegramChatID   string
+	Env              string
 }
 
 func Load() *Config {
@@ -28,6 +29,7 @@ func Load() *Config {
 		NatsSubject:      getString("NATS_SUBJECT", "updates"),
 		TelegramBotToken: getString("TELEGRAM_BOT_TOKEN", "your_telegram_bot_token"),
 		TelegramChatID:   getString("TELEGRAM_CHAT_ID", "your_telegram_chat_id"),
+		Env:              getString("ENV", "staging"),
 	}
 }
 

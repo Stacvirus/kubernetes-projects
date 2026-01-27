@@ -34,20 +34,20 @@ jobs:
         uses: imranismail/setup-kustomize@v2
 
       - name: Use right image for todo-app
-        working-directory: ./todo-app
+        working-directory: ./todo-app/manifest/overlays/staging
         run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:$GITHUB_SHA
 
       - name: Use right image for todo-backend
-        working-directory: ./todo-app
+        working-directory: ./todo-app/manifest/overlays/staging
         run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:$GITHUB_SHA
 
       - name: Use right image for broadcast
-        working-directory: ./todo-app
+        working-directory: ./todo-app/manifest/overlays/staging
         run: kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/broadcast:$GITHUB_SHA
 
       - name: commit kustomization.yml to GitHub
         uses: EndBug/add-and-commit@v9
         with:
           add: |
-            todo-app/kustomization.yml
+            todo-app/manifest/overlays/staging/kustomization.yml
           message: "chore: update image tags to ${{ github.sha }}"

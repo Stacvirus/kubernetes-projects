@@ -11,10 +11,10 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-var natsHealthy atomic.Bool
-
 func main() {
 	config := config.Load()
+
+	var natsHealthy atomic.Bool
 
 	// Telegram client
 	tg := telegram.New(
@@ -68,11 +68,13 @@ func main() {
 
 		log.Printf("Received message: %s", msg)
 
-		err := tg.SendMessage(msg)
-		if err != nil {
-			log.Println("❌ Telegram send failed:", err)
-		} else {
-			log.Println("📤 Message forwarded to Telegram")
+		if config.Env != "staging" {
+			err := tg.SendMessage(msg)
+			if err != nil {
+				log.Println("❌ Telegram send failed:", err)
+			} else {
+				log.Println("📤 Message forwarded to Telegram")
+			}
 		}
 	})
 

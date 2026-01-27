@@ -182,5 +182,8 @@ metrics:
     enabled: <strong>true</strong>
     namespace: prometheus
 ```
+## Get Nats credentials from k8s
+`kubectl get secret my-nats -o jsonpath='{.data.nats-server\.conf}' | base64 --decode`
+
 now just use the command: `helm upgrade -f helm/natvalues.yml my-nats oci://registry-1.docker.io/bitnamicharts/nats`
 NB: you could also overrides some other values like the image names and tags
