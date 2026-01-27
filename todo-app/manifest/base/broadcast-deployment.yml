@@ -19,7 +19,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: todo-config
-          envFrom:
             - secretRef:
                 name: todo-secrets
           readinessProbe:
