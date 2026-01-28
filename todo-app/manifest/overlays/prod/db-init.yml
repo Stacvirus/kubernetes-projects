@@ -13,4 +13,3 @@ spec:
           env:
             - name: PGHOST
               value: prod-postgres-svc
-            - name: PGUSER
