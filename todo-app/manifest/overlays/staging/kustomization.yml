@@ -10,6 +10,8 @@ resources:
 patches:
 - path: configmap.yml
 
+namePrefix: staging-
+
 images:
 - name: stacvirus/broadcast
   newTag: 27044f489379e99c4fdf14068bdde6cb2e7b1ffb

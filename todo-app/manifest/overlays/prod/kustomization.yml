@@ -1,16 +1,22 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: prod
+
 resources:
-  - ../../base
   - namespace.yaml
+  - ./../../base
 
 patches:
+  - path: configmap.yml
+  - path: broadcast-deployment.yml
+
+namePrefix: prod-
 
 images:
   - name: stacvirus/broadcast
-    newTag: 3675d498c1bab5a6f00fd5a81222dde9f4c0243f
+    newTag: 27044f489379e99c4fdf14068bdde6cb2e7b1ffb
   - name: stacvirus/todo-app
-    newTag: 3675d498c1bab5a6f00fd5a81222dde9f4c0243f
+    newTag: 27044f489379e99c4fdf14068bdde6cb2e7b1ffb
   - name: stacvirus/todo-backend
-    newTag: 3675d498c1bab5a6f00fd5a81222dde9f4c0243f
+    newTag: 27044f489379e99c4fdf14068bdde6cb2e7b1ffb
