@@ -4,3 +4,4 @@ metadata:
   name: todo-config
 data:
   ENV: "prod"
+  PG_ADDR: "postgres://stac:password@prod-postgres-svc/todo?sslmode=disable"
