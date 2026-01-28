@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: todo-db-init
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: psql
+          image: postgres:18-alpine
+          env:
+            - name: PGHOST
+              value: postgres-svc
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secrets
+                  key: POSTGRES_USER
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secrets
+                  key: POSTGRES_DB
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: init-sql
+              mountPath: /sql
+          command:
+            - sh
+            - -c
+            - |
+              echo "⏳ Waiting for Postgres..."
+              until pg_isready; do sleep 2; done
+              echo "🚀 Running DB init script"
+              psql -f /sql/init.sql
+      volumes:
+        - name: init-sql
+          configMap:
+            name: todo-db-init

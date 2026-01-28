@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+  namespace: project
+data:
+  CACHE_FILE_PATH: "/usr/src/app/data"
+  BACKEND_URL: "http://localhost:8081/todos"
+  PG_ADDR: "postgres://stac:password@postgres-svc/todo?sslmode=disable"
+  NATS_URL: "nats://my-nats.default.svc.cluster.local:4222"
+  NATS_USER: "nats_client"
+  NATS_PASSWORD: "VLRDI1804E"
+  NATS_SUBJECT: "todo.operations"
+  TELEGRAM_BOT_TOKEN: "your_telegram_bot_token"
+  TELEGRAM_CHAT_ID: "your_telegram_chat_id"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-db-init
+  namespace: project
+data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS todos (
+        id SERIAL PRIMARY KEY,
+        task TEXT NOT NULL,
+        done BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );

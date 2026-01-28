@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broadcast-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broadcast
+  template:
+    metadata:
+      labels:
+        app: broadcast
+    spec:
+      containers:
+        - name: broadcast
+          image: stacvirus/broadcast:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: todo-config
+            - secretRef:
+                name: todo-secrets
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8585
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            httpGet:
+              path: /healthz
+              port: 8585
