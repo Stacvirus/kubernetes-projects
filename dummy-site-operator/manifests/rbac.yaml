@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dummysite-controller
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dummysite-controller
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["*"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["*"]
+- apiGroups: ["dummy-site-operator.stac.dev"]
+  resources: ["dummysites", "dummysites/status"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dummysite-controller
+subjects:
+- kind: ServiceAccount
+  name: dummysite-controller
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: dummysite-controller
+  apiGroup: rbac.authorization.k8s.io

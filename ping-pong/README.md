@@ -1,3 +1,8 @@
+
+### Launching a k3s on docker using k3d
+
+`k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2`
+
 ### Using PV on a k8s cluster
 - Creating directory to hold actual data(locally k3d)
 `docker exec k3d-k3s-default-agent-0 mkdir -p /tmp/kube`
@@ -115,9 +120,6 @@ psql -U stac
 DROP DATABASE pingpong;
 CREATE DATABASE pingpong;
 ```
-### Launching a k3s on docker using k3d
-
-`k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2`
 
 ## Intalling prometheus stack using helm
 
