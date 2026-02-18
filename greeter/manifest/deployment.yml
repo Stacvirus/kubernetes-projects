@@ -1,16 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: greeter-deployment
+  name: greeter-deployment-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: greeter
+      version: v1
   template:
     metadata:
       labels:
         app: greeter
+        version: v1
     spec:
       containers:
         - name: greeter
@@ -19,6 +21,44 @@ spec:
           env:
             - name: VERSION
               value: "1"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 2020
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 2020
+            initialDelaySeconds: 15
+            periodSeconds: 5
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greeter-deployment-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greeter
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: greeter
+        version: v2
+    spec:
+      containers:
+        - name: greeter
+          image: greeter:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: VERSION
+              value: "2"
           readinessProbe:
             httpGet:
               path: /health

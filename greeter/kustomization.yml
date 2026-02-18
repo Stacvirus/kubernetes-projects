@@ -9,3 +9,6 @@ resources:
 - manifest/service.yml
 - manifest/gateway.yml
 - manifest/httproute.yml
+- manifest/destinationrule.yml
+- manifest/virtualservice.yml
+- manifest/waypoint.yml
