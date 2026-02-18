@@ -39,6 +39,13 @@ func (p *Path) handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, line)
 }
 
+// Health endpoint
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, `{"status":"ok"}`)
+}
+
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
@@ -60,6 +67,7 @@ func main() {
 	// log.Printf("Reading pings count from file: %s", path)
 
 	http.HandleFunc("/", p.handler)
+	http.HandleFunc("/health", healthHandler)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 		log.Fatalf("Server failed: %v", err)
