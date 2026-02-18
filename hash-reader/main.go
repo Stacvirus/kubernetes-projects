@@ -12,20 +12,28 @@ import (
 )
 
 type Path struct {
-	url      string
-	message  string
-	filePath string
+	pingPongUrl string
+	greeterUrl  string
+	message     string
+	filePath    string
 }
 
 func (p *Path) handler(w http.ResponseWriter, r *http.Request) {
-	content, err := external.GetRequest(p.url)
+	pingContent, err := external.GetRequest(p.pingPongUrl)
 	if err != nil {
-		log.Printf("Error fetching content: %v", err)
-		http.Error(w, "Error fetching content from pong service", http.StatusInternalServerError)
+		log.Printf("Error fetching pingContent: %v", err)
+		http.Error(w, "Error fetching pingContent from pong service", http.StatusInternalServerError)
+		return
+	}
+
+	greeterContent, err := external.GetRequest(p.greeterUrl)
+	if err != nil {
+		log.Printf("Error fetching greeter content: %v", err)
+		http.Error(w, "Error fetching greeter content from greeter service", http.StatusInternalServerError)
 		return
 	}
 	fileContent := reader.ReadFileContent(p.filePath)
-	line := fmt.Sprintf("file content: %s\nenv variable: %s\n%s", fileContent, p.message, content)
+	line := fmt.Sprintf("file content: %s\nenv variable: %s\n%sgreetings: %s", fileContent, p.message, pingContent, greeterContent)
 
 	w.Header().Set("Content-Type", "text/plain")
 	fmt.Fprint(w, line)
@@ -37,6 +45,7 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	pongURL := os.Getenv("PONG_SERVICE_URL")
+	greeterURL := os.Getenv("GREETER_SERVICE_URL")
 	message := os.Getenv("MESSAGE")
 	filePath := os.Getenv("FILE_PATH")
 
@@ -44,7 +53,7 @@ func main() {
 	// if path == "" {
 	// 	path = "logs.log"
 	// }
-	p := &Path{url: pongURL, message: message, filePath: filePath}
+	p := &Path{pingPongUrl: pongURL, greeterUrl: greeterURL, message: message, filePath: filePath}
 
 	log.Printf("Starting hash reader app on :%s", port)
 
