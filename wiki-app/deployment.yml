@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiki-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wiki-nginx
+  template:
+    metadata:
+      labels:
+        app: wiki-nginx
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      volumes:
+        - name: shared-content
+          emptyDir: {}
+
+      initContainers:
+        - name: init-wiki-fetch
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Fetching Kubernetes Wikipedia page..."
+              curl -L https://en.wikipedia.org/wiki/Kubernetes \
+                -o /usr/share/nginx/html/index.html
+          volumeMounts:
+            - name: shared-content
+              mountPath: /usr/share/nginx/html
+
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: shared-content
+              mountPath: /usr/share/nginx/html
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+        - name: wiki-sidecar
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              while true; do
+                SLEEP_TIME=$((RANDOM % 600 + 300))
+                echo "Sleeping for $SLEEP_TIME seconds..."
+                sleep $SLEEP_TIME
+
+                echo "Fetching random Wikipedia page..."
+                curl -L https://en.wikipedia.org/wiki/Special:Random \
+                  -o /usr/share/nginx/html/random.html
+
+                echo "Random page updated!"
+              done
+          volumeMounts:
+            - name: shared-content
+              mountPath: /usr/share/nginx/html
