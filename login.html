@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dadce0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: monospace;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            background: #5568d3;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .user-info {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .user-info.show {
+            display: block;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-icon svg {
+            width: 50px;
+            height: 50px;
+            fill: white;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #5568d3;
+        }
+
+        .error-message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            color: #c33;
+            font-size: 14px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1565c0;
+            text-align: left;
+        }
+
+        .note strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome</h1>
+        <p>Enter your Google Access Token to sign in</p>
+        
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="accessToken">Google Access Token</label>
+                <textarea 
+                    id="accessToken" 
+                    placeholder="Paste your Google access token here (e.g., ya29.a0...)"
+                    required
+                ></textarea>
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 17L15 12L10 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Sign In
+            </button>
+        </form>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="user-info" id="userInfo">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h2 style="color: #4caf50; margin-bottom: 20px;">Login Successful!</h2>
+            
+            <div class="info-row">
+                <span class="info-label">Session Expires In:</span>
+                <span class="info-value" id="expiresIn">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Scope:</span>
+                <span class="info-value" id="scope">-</span>
+            </div>
+            
+            <button class="logout-btn" id="logoutBtn">Sign Out</button>
+        </div>
+
+        <div class="note">
+            <strong>How to get a Google Access Token:</strong>
+            1. Go to <a href="https://developers.google.com/oauthplayground" target="_blank">OAuth 2.0 Playground</a><br>
+            2. Select the scopes you need (e.g., Google+ API v1)<br>
+            3. Click "Authorize APIs" and sign in<br>
+            4. Click "Exchange authorization code for tokens"<br>
+            5. Copy the "Access token" value<br><br>
+            <strong>Note:</strong> Access tokens expire quickly (usually 1 hour)
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:8181/core/api/auth/exchange';
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const accessToken = document.getElementById('accessToken').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Hide previous errors
+            errorMessage.classList.remove('show');
+            
+            if (!accessToken) {
+                showError('Please enter a valid access token');
+                return;
+            }
+
+            try {
+                // Disable button and show loading state
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.25"/>
+                        <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/>
+                        </path>
+                    </svg>
+                    Signing In...
+                `;
+
+                // Exchange token with backend
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Important for httpOnly cookies
+                    body: JSON.stringify({
+                        googleAccessToken: accessToken
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `Login failed: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('Backend response:', data);
+
+                // Display success information
+                document.getElementById('expiresIn').textContent = formatExpiresIn(data.expiresIn);
+                document.getElementById('scope').textContent = data.scope || 'N/A';
+                
+                // Hide form and show user info
+                document.getElementById('loginForm').style.display = 'none';
+                document.querySelector('.note').style.display = 'none';
+                document.getElementById('userInfo').classList.add('show');
+                
+                console.log('User successfully authenticated');
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message || 'Login failed. Please check your access token and try again.');
+                
+                // Reset button state
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10 17L15 12L10 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sign In
+                `;
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            // Reset the form
+            document.getElementById('accessToken').value = '';
+            document.getElementById('loginForm').style.display = 'flex';
+            document.querySelector('.note').style.display = 'block';
+            document.getElementById('userInfo').classList.remove('show');
+            document.getElementById('errorMessage').classList.remove('show');
+            
+            console.log('User logged out');
+        });
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        function formatExpiresIn(seconds) {
+            if (!seconds) return 'N/A';
+            
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            
+            if (hours > 0) {
+                return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            }
+            return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+        }
+    </script>
+</body>
+</html>
