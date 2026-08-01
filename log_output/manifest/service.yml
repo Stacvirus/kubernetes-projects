@@ -3,12 +3,10 @@ kind: Service
 metadata:
   name: hashgenerator-svc
 spec:
-  type: NodePort
+  type: ClusterIP # This is the default type, which means that the service is only available inside the cluster.
   selector:
     app: hashgenerator # This is the app as declared in the deployment.
   ports:
-    - name: http
-      nodePort: 30080 # This is the port that is available outside. Value for nodePort can be between 30000-32767
+    - port: 1234 # This is the port that the service will listen on.
       protocol: TCP
-      port: 1234 # This is a port that is available to the cluster, in this case it can be ~ anything
-      targetPort: 4040 # This is the target port
+      targetPort: 4040 # This is the port that the container is listening on. It should match the port that the application is listening on inside the container.
