@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-app-svc
+spec:
+  type: ClusterIP # This is the default type, which means that the service is only available inside the cluster.
+  selector:
+    app: todoapp # This is the app as declared in the deployment.
+  ports:
+    - port: 2345 # This is the port that the service will listen on.
+      protocol: TCP
+      targetPort: 8080 # This is the port that the container is listening on. It should match the port that the application is listening on inside the container.
