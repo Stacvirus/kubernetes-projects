@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,20 +8,13 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/stacvirus/log_output/internal/hash"
 )
 
-func generateHash() string {
-	h := sha1.New()
-	h.Write([]byte("Hello, World!"))
-	sum := h.Sum(nil)
-
-	return hex.EncodeToString(sum)[:10]
-}
-
 func handler(w http.ResponseWriter, r *http.Request) {
-	hash := generateHash()
-	log.Printf("%s", hash)
-	w.Write([]byte(hash))
+	h := hash.Generate()
+	log.Printf("%s", h)
+	w.Write([]byte(h))
 }
 
 func main() {
@@ -33,11 +24,17 @@ func main() {
 	port := os.Getenv("PORT")
 	log.Printf("Starting log output app on :%s", port)
 
+	path := os.Getenv("HASH_FILE_PATH")
+	if path == "" {
+		path = "hashes.log"
+	}
+
 	ticker := time.NewTicker(5 * time.Second)
 	go func() {
 		for range ticker.C {
-			hash := generateHash()
-			log.Printf("%s", hash)
+			h := hash.Generate()
+			log.Printf("%s", h)
+			hash.WriteToFile(path, h)
 		}
 	}()
 

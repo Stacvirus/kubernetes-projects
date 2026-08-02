@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log
+  template:
+    metadata:
+      labels:
+        app: log
+    spec:
+      volumes:
+        - name: shared-hash
+          emptyDir: {}
+      containers:
+        - name: log-output
+          image: log-output-go:latest 
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: shared-hash
+            mountPath: /usr/src/app/files
+          env:
+            - name: HASH_FILE_PATH
+              value: "/usr/src/app/files/hashes.log"
+        - name: log-input
+          image: log-input-go:latest
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: shared-hash
+            mountPath: /usr/src/app/files
+          env:
+            - name: HASH_FILE_PATH
+              value: "/usr/src/app/files/hashes.log"

@@ -1,4 +1,4 @@
-module github.com/stacvirus/hash-generator-app
+module github.com/stacvirus/log_output
 
 go 1.24.5
 
