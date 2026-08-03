@@ -10,7 +10,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: hashgenerator-svc
+            name: log-output-svc
             port:
               number: 1234
       - path: /pingpong
