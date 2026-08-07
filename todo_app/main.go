@@ -5,6 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"time"
+	"todo-app/internal/file"
+	"todo-app/internal/picsum"
 
 	"github.com/joho/godotenv"
 )
@@ -15,10 +19,55 @@ func main() {
 	}
 
 	port := os.Getenv("PORT")
+	path := os.Getenv("CACHE_FILE_PATH")
+	if path == "" {
+		path = "./image"
+	}
+	imagePath := filepath.Join(path, "image.jpg")
 
 	log.Printf("Starting TODO app on :%s", port)
+
+	const cacheDuration = 10 * time.Second
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("TODO App is running"))
+		needNew := true
+		if modTime, err := file.ReadFileModTime(imagePath); err == nil {
+			if time.Since(modTime) < cacheDuration {
+				needNew = false
+			}
+		}
+
+		if needNew {
+			log.Println("Fetching new image from Picsum...")
+			img, err := picsum.DownloadRandomImage(1200)
+			if err == nil {
+				if err := file.SaveBytesToFile(imagePath, img); err != nil {
+					log.Printf("Error saving image: %v", err)
+				}
+			} else {
+				log.Printf("Error downloading image: %v", err)
+			}
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		// Write simple HTML response
+		html := `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<title>TODO App</title>
+		</head>
+		<body>
+			<h1>Todo App</h1>
+			<img src="/image" alt="Random image" width="200"/>
+			<p>DevOps with Kubernetes 2026</p>
+		</body>
+		</html>
+		`
+		w.Write([]byte(html))
+	})
+
+	http.HandleFunc("/image", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, imagePath)
 	})
 	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
