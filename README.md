@@ -16,3 +16,6 @@
 * [1.11](https://github.com/Stacvirus/kubernetes-projects/tree/1.11/ping_pong)
 * [1.12](https://github.com/Stacvirus/kubernetes-projects/tree/1.12/todo_app)
 * [1.13](https://github.com/Stacvirus/kubernetes-projects/tree/1.13/todo_app)
+
+### Chapter 3
+* [2.1](https://github.com/Stacvirus/kubernetes-projects/tree/2.1/ping_pong)
