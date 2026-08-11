@@ -10,10 +10,10 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: log-output-svc
+            name: log-input-svc
             port:
               number: 1234
-      - path: /pingpong
+      - path: /pings
         pathType: Prefix
         backend:
           service:

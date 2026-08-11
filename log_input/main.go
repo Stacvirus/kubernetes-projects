@@ -7,15 +7,21 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/stacvirus/log_input/internal/reader"
+	"github.com/stacvirus/log_input/external"
 )
 
 type Path struct {
-	value string
+	url string
 }
 
 func (p *Path) handler(w http.ResponseWriter, r *http.Request) {
-	content := reader.ReadFileContent(p.value)
+	content, err := external.GetRequest(p.url)
+	if err != nil {
+		log.Printf("Error fetching content: %v", err)
+		http.Error(w, "Error fetching content from pong service", http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "text/plain")
 	fmt.Fprint(w, content)
 }
@@ -31,14 +37,15 @@ func main() {
 	}
 	log.Printf("Starting log input app on :%s", port)
 
-	path := os.Getenv("HASH_FILE_PATH")
-	if path == "" {
-		path = "../log_output/hashes.log"
+	pongService := os.Getenv("PONG_SERVICE_URL")
+	if pongService == "" {
+		log.Fatalf("PONG_SERVICE_URL environment variable is not set")
 	}
-	p := &Path{value: path}
-	log.Printf("Reading hash from file: %s", p.value)
+	p := &Path{url: pongService}
+	log.Printf("Getting` hash from service: %s", p.url)
 
-	http.HandleFunc("/hashes", p.handler)
+	http.HandleFunc("/", p.handler)
+
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

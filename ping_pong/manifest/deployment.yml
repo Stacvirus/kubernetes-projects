@@ -24,14 +24,28 @@ spec:
           - name: log-volume
             mountPath: /usr/src/app/files
           env:
-            - name: HASH_FILE_PATH
+            - name: LOG_FILE_PATH
               value: "/usr/src/app/files/hashes.log"
-        - name: logoutput
-          image: log-output-go:latest 
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-input-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loginput
+  template:
+    metadata:
+      labels:
+        app: loginput
+    spec:
+      containers:
+        - name: loginput
+          image: log-input-go:latest 
           imagePullPolicy: IfNotPresent
-          volumeMounts:
-          - name: log-volume
-            mountPath: /usr/src/app/files
           env:
-            - name: HASH_FILE_PATH
-              value: "/usr/src/app/files/hashes.log"
+            - name: PONG_SERVICE_URL
+              value: "http://ping-pong-svc:2453/pings"
